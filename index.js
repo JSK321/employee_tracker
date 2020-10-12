@@ -27,13 +27,15 @@ function askQuestion() {
             name:"choice",
             type:"list",
             message: "What would you like to do?",
-            choices: ["View all Employees", "View all Employees by Department", "Quit"]
+            choices: ["View all Employees", "View all Employees by Department", "View all Employees by Role", "Quit"]
         },
     ]).then(function(response){
         if(response.choice === "View all Employees"){
             viewEmployees();
         }else if (response.choice === "View all Employees by Department"){
-            viewDepartment();
+            viewDepartments();
+        } else if (response.choice === "View all Employees by Role"){
+            viewRoles();
         } else {
             console.log("Have a nice day!");
             connection.end();
@@ -42,11 +44,16 @@ function askQuestion() {
 }
 
 function viewEmployees(){
-    console.log("Linked!")
+    console.log("Employees!")
     askQuestion();
 }
 
-function viewDepartment(){
-    console.log("Linked!")
+function viewDepartments(){
+    console.log("Department!")
+    askQuestion();
+}
+
+function viewRoles(){
+    console.log("Roles!")
     askQuestion();
 }
