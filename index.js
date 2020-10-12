@@ -22,6 +22,24 @@ connection.connect(function(err) {
 });
 
 function askQuestion() {
-    console.log("SUCCESS!");
-    connection.end();
+    inquirer.prompt([
+        {
+            name:"choice",
+            type:"list",
+            message: "What would you like to do?",
+            choices: ["View all Employees", "Quit"]
+        },
+    ]).then(function(response){
+        if(response.choice === "View all Employees"){
+            viewEmployees();
+        } else {
+            console.log("Have a nice day!");
+            connection.end();
+        }
+    })
+}
+
+function viewEmployees(){
+    console.log("Linked!")
+    askQuestion();
 }
