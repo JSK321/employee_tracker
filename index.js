@@ -27,15 +27,17 @@ function askQuestion() {
             name:"choice",
             type:"list",
             message: "What would you like to do?",
-            choices: ["View all Employees", "View all Employees by Department", "View all Employees by Role", "Quit"]
+            choices: ["View all Employees", "View all Employees by Department", "View all Employees by Role", "Add Employee", "Quit"]
         },
     ]).then(function(response){
         if(response.choice === "View all Employees"){
             viewEmployees();
-        }else if (response.choice === "View all Employees by Department"){
+        } else if (response.choice === "View all Employees by Department"){
             viewDepartments();
         } else if (response.choice === "View all Employees by Role"){
             viewRoles();
+        } else if (response.choice === "Add Employee"){
+            addEmployee();
         } else {
             console.log("Have a nice day!");
             connection.end();
@@ -55,5 +57,10 @@ function viewDepartments(){
 
 function viewRoles(){
     console.log("Roles!")
+    askQuestion();
+}
+
+function addEmployee(){
+    console.log("Add!")
     askQuestion();
 }
