@@ -46,8 +46,14 @@ function askQuestion() {
 }
 
 function viewEmployees(){
-    console.log("Employees!")
-    askQuestion();
+    connection.query("SELECT * FROM employees", function(err,data){
+        if(err){
+            throw err
+        } else {
+            console.table(data)
+            askQuestion();
+        }
+    })
 }
 
 function viewDepartments(){
@@ -61,6 +67,35 @@ function viewRoles(){
 }
 
 function addEmployee(){
-    console.log("Add!")
-    askQuestion();
+    inquirer.prompt([
+        {
+            name: "first_name",
+            type: "input",
+            message: "What is the Employee's first name?"
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "What is the Employee's last name?"
+        },
+        {
+            name: "employee_role",
+            type: "input",
+            message: "What is the Employee's role?"
+        },
+        {
+            name: "manager_ID",
+            type: "input",
+            message: "Who is the Employee's manager?"
+        },
+    ]).then(function(response){
+        let query = "INSERT INTO employees (first_name, last_name) VALUES (?,?)"
+        connection.query(query, [response.first_name, response.last_name], function(err,res){
+            if (err){
+                throw err
+            }
+            console.table(res)
+            askQuestion();
+        })
+    })  
 }
