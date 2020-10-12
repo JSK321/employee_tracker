@@ -27,11 +27,13 @@ function askQuestion() {
             name:"choice",
             type:"list",
             message: "What would you like to do?",
-            choices: ["View all Employees", "Quit"]
+            choices: ["View all Employees", "View all Employees by Department", "Quit"]
         },
     ]).then(function(response){
         if(response.choice === "View all Employees"){
             viewEmployees();
+        }else if (response.choice === "View all Employees by Department"){
+            viewDepartment();
         } else {
             console.log("Have a nice day!");
             connection.end();
@@ -40,6 +42,11 @@ function askQuestion() {
 }
 
 function viewEmployees(){
+    console.log("Linked!")
+    askQuestion();
+}
+
+function viewDepartment(){
     console.log("Linked!")
     askQuestion();
 }
