@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
   user: "root",
 
   // Your password
-  password: "jaeshin2ek",
+  password: "password",
   database: "employeesDB"
 });
 
@@ -81,16 +81,16 @@ function addEmployee(){
         {
             name: "employee_role",
             type: "input",
-            message: "What is the Employee's role?"
+            message: "What is the Employee's role ID?"
         },
         {
             name: "manager_ID",
             type: "input",
-            message: "Who is the Employee's manager?"
+            message: "What is the Employee's manager ID?"
         },
     ]).then(function(response){
-        let query = "INSERT INTO employees (first_name, last_name) VALUES (?,?)"
-        connection.query(query, [response.first_name, response.last_name], function(err,res){
+        let query = "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)"
+        connection.query(query, [response.first_name, response.last_name, response.employee_role, response.manager_ID], function(err,res){
             if (err){
                 throw err
             }
