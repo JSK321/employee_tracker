@@ -27,7 +27,7 @@ function askQuestion() {
             name:"choice",
             type:"list",
             message: "What would you like to do?",
-            choices: ["View all Employees", "View all Employees by Department", "View all Employees by Role", "Add Employee", "Quit"]
+            choices: ["View all Employees", "View all Employees by Department", "View all Employees by Role", "Add Employee", "Add an Employee role", "Add department", "Quit"]
         },
     ]).then(function(response){
         if(response.choice === "View all Employees"){
@@ -38,6 +38,10 @@ function askQuestion() {
             viewRoles();
         } else if (response.choice === "Add Employee"){
             addEmployee();
+        } else if (response.choice === "Add an Employee role"){
+            addRole();
+        } else if (response.choice === "Add department"){
+            addDepartment();
         } else {
             console.log("Have a nice day!");
             connection.end();
@@ -57,13 +61,25 @@ function viewEmployees(){
 }
 
 function viewDepartments(){
-    console.log("Department!")
-    askQuestion();
+    connection.query("SELECT * FROM department", function(err,data){
+        if(err){
+            throw err
+        } else {
+            console.table(data)
+            askQuestion();
+        }
+    })
 }
 
 function viewRoles(){
-    console.log("Roles!")
-    askQuestion();
+    connection.query("SELECT * FROM role", function(err,data){
+        if(err){
+            throw err
+        } else {
+            console.table(data)
+            askQuestion();
+        }
+    })
 }
 
 function addEmployee(){
@@ -80,13 +96,13 @@ function addEmployee(){
         },
         {
             name: "employee_role",
-            type: "input",
-            message: "What is the Employee's role ID?"
+            type: "number",
+            message: "What is the Employee's role ID number?"
         },
         {
             name: "manager_ID",
-            type: "input",
-            message: "What is the Employee's manager ID?"
+            type: "number",
+            message: "What is the Employee's manager ID number?"
         },
     ]).then(function(response){
         let query = "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)"
@@ -94,8 +110,56 @@ function addEmployee(){
             if (err){
                 throw err
             }
-            console.table(res)
+            viewEmployees();
             askQuestion();
         })
     })  
+}
+
+function addRole(){
+    inquirer.prompt([
+        {
+            name: "role_title",
+            type: "input",
+            message: "What is the title of the Employee's role?"
+        },
+        {
+            name: "role_salary",
+            type: "number",
+            message: "What is the salary of the Employee's role?"
+        },
+        {
+            name: "role_id",
+            type: "number",
+            message: "What is the department id number?"
+        },
+    ]).then(function(response){
+        let query = "INSERT INTO role (title, salary, department_id) VALUES (?,?,?)"
+        connection.query(query, [response.role_title, response.role_salary, response.role_id], function(err,res){
+            if (err){
+                throw err
+            }
+            console.table(res)
+            askQuestion();
+        })
+    })
+}
+
+function addDepartment(){
+    inquirer.prompt([
+        {
+            name: "department_title",
+            type: "input",
+            message: "What department would you like to add?"
+        },
+    ]).then(function(response){
+        let query = "INSERT INTO department (name) VALUES (?)"
+        connection.query(query, [response.department_title], function(err,res){
+            if (err){
+                throw err
+            }
+            console.table(res)
+            askQuestion();
+        })
+    })
 }
