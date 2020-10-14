@@ -27,74 +27,74 @@ function askQuestion() {
             name: "choice",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View all Employees", "View all Employees by Department", "View all Employees by Role","Update Employee", "Add Employee", "Add an Employee role", "Add department", "Quit"]
+            choices: ["View all Employees", "View all Departments", "View all Roles", "Add Department", "Add an Employee role", "Add Employee", "Update Employee", "Quit"]
         },
     ]).then(function (response) {
         if (response.choice === "View all Employees") {
             viewEmployees();
-        } else if (response.choice === "View all Employees by Department") {
+        } else if (response.choice === "View all Departments") {
             viewDepartments();
-        } else if (response.choice === "View all Employees by Role") {
+        } else if (response.choice === "View all Roles") {
             viewRoles();
-        } else if (response.choice === "Update Employee") {
-            updateEmployee();
-        } else if (response.choice === "Add Employee") {
-            addEmployee();
+        } else if (response.choice === "Add Department") {
+            addDepartment();
         } else if (response.choice === "Add an Employee role") {
             addRole();
-        } else if (response.choice === "Add department") {
-            addDepartment();
+        } else if (response.choice === "Add Employee") {
+            addEmployee();
+        } else if (response.choice === "Update Employee") {
+            updateEmployee();
         } else {
             console.log("Have a nice day!");
             connection.end();
-        }
-    })
-}
+        };
+    });
+};
 
 function viewEmployees() {
-    connection.query("SELECT * FROM employees", function (err, data) {
+    connection.query("SELECT first_name, last_name, title, salary FROM employees INNER JOIN role ON role.id = role_id", function (err, data) {
         if (err) {
             throw err
         } else {
-            console.table(data)
+            console.table(data);
             askQuestion();
-        }
-    })
-}
+        };
+    });
+};
 
 function viewDepartments() {
-    connection.query("SELECT * FROM department", function (err, data) {
+    connection.query("SELECT name FROM department", function (err, data) {
         if (err) {
             throw err
         } else {
-            console.table(data)
+            console.table(data);
             askQuestion();
-        }
-    })
-}
+        };
+    });
+};
 
 function viewRoles() {
+    connection.query("SELECT title, salary FROM role", function (err, data) {
+        if (err) {
+            throw err
+        } else {
+            console.table(data);
+            askQuestion();
+        };
+    });
+};
+
+function addEmployee() {
     connection.query("SELECT * FROM role", function (err, data) {
         if (err) {
             throw err
-        } else {
-            console.table(data)
-            askQuestion();
         }
-    })
-}
-
-function addEmployee() {
-    connection.query("SELECT * FROM role", function(err,data){
-        if (err){
-            throw err
-        }
-        let roleArray = data.map(function(role){
+        let roleArray = data.map(function (role) {
             return {
                 name: role.title,
                 value: role.department_id
             }
-        })
+        });
         inquirer.prompt([
             {
                 name: "first_name",
@@ -118,12 +118,12 @@ function addEmployee() {
                 if (err) {
                     throw err
                 }
-                console.log("Added Employee!")
+                console.log("Added Employee!");
                 askQuestion();
-            })
-        })
-    })
-}
+            });
+        });
+    });
+};
 
 function addRole() {
     connection.query("SELECT * FROM department", function (err, data) {
@@ -159,12 +159,14 @@ function addRole() {
                 if (err) {
                     throw err
                 }
-                console.table(res)
+                console.log("---------------------------------")
+                console.log(`Added ${response.role_title} role!`)
+                console.log("---------------------------------")
                 askQuestion();
-            })
-        })
-    })
-}
+            });
+        });
+    });
+};
 
 function addDepartment() {
     inquirer.prompt([
@@ -179,22 +181,55 @@ function addDepartment() {
             if (err) {
                 throw err
             }
-            console.table(res)
+            console.log("---------------------------------")
+            console.log(`Added ${response.department_title} department!`)
+            console.log("---------------------------------")
             askQuestion();
-        })
-    })
-}
+        });
+    });
+};
 
-function updateEmployee(){
-    console.log("yay!")
-    //  inquirer.prompt([
-    //      {
-    //         name: "update_employee",
-    //         type: "input",
-    //         message: "Which employee would you like to update?"
-    //      },
-    //  ]).then(function(response){
-    //      let query = "UPDATE employees SET ? WHERE ?"
-    //      connection.query(query, [response])
-    //  })
-}
+function updateEmployee() {
+    connection.query(`SELECT CONCAT(employees.first_name," ", employees.last_name) AS name, title FROM employees INNER JOIN role ON role.id = employees.role_id`, function (err, data) {
+        if (err) {
+            throw err
+        }
+
+        let empArray = data.map(function (emp) {
+            return {
+                name: emp.name,
+            }
+        });
+
+        let empRole = data.map(function(role){
+            return {
+                name: role.title
+            }
+        });
+
+        inquirer.prompt([
+            {
+                name: "update_employee",
+                type: "list",
+                message: "Which employee would you like to update?",
+                choices: empArray
+            },
+            {
+                name: "update_role",
+                type: "list",
+                message: "Which role would you like to update?",
+                choices: empRole
+
+            }
+        ]).then(function (response) {
+            let query = `UPDATE employees INNER JOIN role ON role.id = employees.role_id SET title = ? WHERE CONCAT(employees.first_name," ", employees.last_name) = ?`
+            connection.query(query, [response.update_role, response.update_employee],function(err, res){
+                if (err){
+                    throw err
+                }
+                console.log("Employee Updated!");
+                askQuestion();
+            });
+        });
+    });
+};

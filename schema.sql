@@ -40,11 +40,7 @@ INSERT INTO role (title, salary, department_id) VALUES ("Sales Person", 50000, 2
 INSERT INTO role (title, salary, department_id) VALUES ("Lawyer", 80000, 3);
 INSERT INTO role (title, salary, department_id) VALUES ("Engineer", 75000, 4);
 
-INSERT INTO employees (first_name, last_name, role_id) VALUES ("Bob", "Brown", 1);
 INSERT INTO employees (first_name, last_name, role_id) VALUES ("Charles", "Johnson", 1);
 INSERT INTO employees (first_name, last_name, role_id) VALUES ("John", "Davis", 2);
 INSERT INTO employees (first_name, last_name, role_id) VALUES ("David", "Smith", 4);
 INSERT INTO employees (first_name, last_name, role_id) VALUES ("Paul", "Jones", 3);
-INSERT INTO employees (first_name, last_name, role_id) VALUES ("Maria", "Lopez", 2);
-INSERT INTO employees (first_name, last_name, role_id) VALUES ("Michelle", "Williams", 4);
-INSERT INTO employees (first_name, last_name, role_id) VALUES ("Sarah", "Lee", 3);
