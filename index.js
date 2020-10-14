@@ -27,7 +27,7 @@ function askQuestion() {
             name: "choice",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View all Employees", "View all Employees by Department", "View all Employees by Role", "Add Employee", "Add an Employee role", "Add department", "Quit"]
+            choices: ["View all Employees", "View all Employees by Department", "View all Employees by Role","Update Employee", "Add Employee", "Add an Employee role", "Add department", "Quit"]
         },
     ]).then(function (response) {
         if (response.choice === "View all Employees") {
@@ -36,6 +36,8 @@ function askQuestion() {
             viewDepartments();
         } else if (response.choice === "View all Employees by Role") {
             viewRoles();
+        } else if (response.choice === "Update Employee") {
+            updateEmployee();
         } else if (response.choice === "Add Employee") {
             addEmployee();
         } else if (response.choice === "Add an Employee role") {
@@ -83,7 +85,7 @@ function viewRoles() {
 }
 
 function addEmployee() {
-    connection.query("SELECT title, department_id FROM role", function(err,data){
+    connection.query("SELECT * FROM role", function(err,data){
         if (err){
             throw err
         }
@@ -111,7 +113,6 @@ function addEmployee() {
                 choices: roleArray
             }
         ]).then(function (response) {
-            console.log(reponse.roleArray)
             let query = "INSERT INTO employees (first_name, last_name, role_id) VALUES (?,?,?)"
             connection.query(query, [response.first_name, response.last_name, response.employee_role], function (err, res) {
                 if (err) {
@@ -182,4 +183,18 @@ function addDepartment() {
             askQuestion();
         })
     })
+}
+
+function updateEmployee(){
+    console.log("yay!")
+    //  inquirer.prompt([
+    //      {
+    //         name: "update_employee",
+    //         type: "input",
+    //         message: "Which employee would you like to update?"
+    //      },
+    //  ]).then(function(response){
+    //      let query = "UPDATE employees SET ? WHERE ?"
+    //      connection.query(query, [response])
+    //  })
 }
